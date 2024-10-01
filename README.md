@@ -86,6 +86,30 @@ Since we can manage the life-cycle of `mp.Pool()` explicitly, we can have them c
 they can start to view their set of nodes as a single collection of resources and program different elements of their application to use different amounts of
 resources over time. It's kind of cloud-like.
 
+In addition to scaling `mp.Pool()` to supercomputer scales, Dragon also lets users do something base `multiprocessing` doesn't let you do. You can nest `mp.Pool()`
+inside of one another. Pools that use Pool?! Why might you want that? There are a lot of use-cases for this. Imagine your use-case is to process different types of
+data as they land in a filesystem. Imagine that each file has many components that themselves require `Pool.map()`-like operations. Something like this:
+
+    import dragon
+    from multiprocessing import Pool
+
+    def proc_data(d):
+        # do some work
+
+    def f(workfile):
+        with open(workfile, "rb") as f:
+            data = f.read()
+            with Pool(128) as p:
+                results = p.map(proc_data, list(data))
+        return results
+
+    if __name__ == '__main__':
+        mp.set_start_method("dragon")
+
+        files = #some long list
+        with Pool(128) as p:
+            all_results = p.map(f, files)
+
 ## Data
 
 ![DDict](ddict.png)

@@ -193,7 +193,7 @@ without any system-specific code, such as file paths.
 
 How well does `DDict` perform though? We improve Dragon performance with each release, but this is where we are at with Dragon v0.10. With this [benchmark](gups_ddict.py),
 inspired by the classic [GUPS](https://hpcchallenge.org/projectsfiles/hpcc/RandomAccess.html) benchmark, some large number of processes will write a unique set of
-key/value pairs into the `DDict`. The keys are always 128 bytes in sioze, but the values vary in length per outer loop of the benchmark. The plot below shows the aggregate
+key/value pairs into the `DDict`. The keys are always 128 bytes in size, but the values vary in length per outer loop of the benchmark. The plot below shows the aggregate
 bandwidth measured across the clients for writing key/value pairs with a `DDict` sharded across 128 nodes on a Cray EX system. The equivalent benchmark written for something
 like SHMEM may be faster, but for the largest value sizes `DDict` is approaching 30% of the achievable bandwidth. We have seen high-end filesystems do worse. We should note,
 the `DDict` is not persistent between executions of Dragon. We are working on that feature.

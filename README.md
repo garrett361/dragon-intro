@@ -125,7 +125,9 @@ Another
 
 ## Data
 
-![DDict](ddict.png
+[benchmark](gups_ddict.py)
+
+![DDict](ddict.png)
 
 ## Telemetry
 

@@ -188,7 +188,7 @@ Using the `DDict` looks like the following:
 You can start to think of the `DDict` almost like a co-located object store that scales with your application. For example, you might read in a large quanitity of
 data from a filesystem and store them into the `DDict` with keys mimicing file paths. If you don't have a great parallel filesystem, this lets you read the data once,
 cache it in the memory of your nodes, and leverage your network's performance (and shared memory) for subsequent accesses. You can use it instead of storing
-intermediate results to a filesystem. If your workload consists of stages of Python processes in a pipeline, `DDict` is a very convinient way to manage data exchange
+intermediate results to a filesystem. If your workload consists of stages of Python processes in a pipeline, `DDict` is a very convenient way to manage data exchange
 without any system-specific code, such as file paths.
 
 How well does `DDict` perform though? We improve Dragon performance with each release, but this is where we are at with Dragon v0.10. With this [benchmark](gups_ddict.py),

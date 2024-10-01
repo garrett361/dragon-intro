@@ -1,5 +1,5 @@
 # Introduction to Dragon
-Wondering where to start with [Dragon](http://dragonhpc.org/)? This page is for you. We'll walk through the key patterns and abstractions
+Wondering where to start with [Dragon](http://dragonhpc.org/)? This page is for you. We'll walk through the select patterns and abstractions
 and have you quickly programming at scale.
 
 ![Pitch](dragon_pitch.png)
@@ -138,22 +138,30 @@ scales well. We do have designs for even better scaling, but that's for a differ
 
         q = Queue()
         somedata = # some data
-        p = Process(target=work, args=(somedata, q))
+        p = Process(target=work, args=(somedata, q,))
         p.start()
 
         result = q.get()
         p.join()
 
-`mp.Queue` is a "pickleable" object, which means you can pass it as an argument to an entirely other Python process, as done in this example. The same is true for
+`mp.Queue` is a "pickleable" object, which means you can pass it as an argument to an entirely different Python process, as done in this example. The same is true for
 all the other communication and collective primitives in `multiprocessing`. Dragon's implementation relies on our high-performance (Shared memory+RDMA-capable) communication layer,
 called [`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels).
 
-
 ## Data
+The Python [`dict`]([`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) is one of the most fundamental and useful abstractions in the language, in our opinon. What if we had a `dict` that scaled to hundreds or thousands of nodes
+and could be accessed by thousands of processes at the same time? Dragon has this feature. With the Dragon distributed `dict`, [DDict](https://dragonhpc.github.io/dragon/doc/_build/html/ref/data/ddict.html),
+you can easily manage data exchange at-scale between process with great performance. Like everything communication related in Dragon, it uses our
+[`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) layer for high-performance communication. It behaves with the same semantics as the
+normal 
 
 [benchmark](gups_ddict.py)
 
 ![DDict](ddict.png)
+
+## Core
+
+### ProcessGroup
 
 ## Telemetry
 

@@ -129,8 +129,8 @@ Another
 
 ## Telemetry
 
-![Telemetry](https://zenodo.org/records/13327798)
+[Telemetry](https://zenodo.org/records/13327798)
 
 ## Workflow
 
-![Proxy](https://zenodo.org/records/10115199)
+[Proxy](https://zenodo.org/records/10115199)

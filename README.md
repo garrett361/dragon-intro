@@ -72,7 +72,7 @@ file as `type B`. One approach to balance the processing could look like this:
         poola = Pool(2000)
         poolb = Pool(1000)
 
-        resultsa = poola.map_async(f, typeAfiles
+        resultsa = poola.map_async(f, typeAfiles)
         resultsb = poolb.map_async(f, typeBfiles)
         for result in resultsa.get()
             # do something

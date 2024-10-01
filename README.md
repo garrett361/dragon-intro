@@ -22,7 +22,7 @@ The `multiprocessing` documentation introduces the API with this basic example u
         with Pool(5) as p:
             print(p.map(f, [1, 2, 3]))
 
-This code starts up an additional 5 processes and executes the function `f()` across each item in the list `[1,2,3]`. When your application has a pattern like this
+This code starts up an additional 5 processes and executes the function `f()` across each item in the list `[1,2,3]`. When your application has a pattern like this,
 `Pool.map()` is a great tool for getting true parallel performance as each process is its own interpreter and GIL. This is especially important when the list of items
 is very large. The Dragon version of this code looks like the following:
 
@@ -39,7 +39,7 @@ is very large. The Dragon version of this code looks like the following:
 
 We needed to add a single `import dragon` and tell `multiprocessing` to use the `dragon` start method. That's it. If this code then called libraries underneath that
 also use `multiprocessing`, those two steps enables Dragon for the libraries as well. But what do I get from this? The true power of Dragon comes when you have a very
-large workset and can scale across an entire cluster. As of the Dragon v0.9 release, we regularily test `mp.Pool()` with over 50,000 workers on hundreds of nodes on a
+large working set and can scale across an entire cluster. As of the Dragon v0.9 release, we regularily test `mp.Pool()` with over 50,000 workers on hundreds of nodes on a
 Cray EX supercomputer.
 
     import dragon
@@ -185,7 +185,18 @@ Using the `DDict` looks like the following:
         for k in dist_dict.keys():
             print(f"{k} = {dist_dict[k]}", flush=True)
 
-[benchmark](gups_ddict.py)
+You can start to think of the `DDict` almost like a co-located object store that scales with your application. For example, you might read in a large quanitity of
+data from a filesystem and store them into the `DDict` with keys mimicing file paths. If you don't have a great parallel filesystem, this lets you read the data once,
+cache it in the memory of your nodes, and leverage your network's performance (and shared memory) for subsequent accesses. You can use it instead of storing
+intermediate results to a filesystem. If your workload consists of stages of Python processes in a pipeline, `DDict` is a very convinient way to manage data exchange
+without any system-specific code, such as file paths.
+
+How well does `DDict` perform though? We improve Dragon performance with each release, but this is where we are at with Dragon v0.10. With this [benchmark](gups_ddict.py),
+inspired by the classic [GUPS](https://hpcchallenge.org/projectsfiles/hpcc/RandomAccess.html) benchmark, some large number of processes will write a unique set of
+key/value pairs into the `DDict`. The keys are always 128 bytes in sioze, but the values vary in length per outer loop of the benchmark. The plot below shows the aggregate
+bandwidth measured across the clients for writing key/value pairs with a `DDict` sharded across 128 nodes on a Cray EX system. The equivalent benchmark written for something
+like SHMEM may be faster, but for the largest value sizes `DDict` is approaching 30% of the achievable bandwidth. We have seen high-end filesystems do worse. We should note,
+the `DDict` is not persistent between executions of Dragon. We are working on that feature.
 
 ![DDict](ddict.png)
 

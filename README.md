@@ -9,6 +9,82 @@ apply it to the standard API for parallel Python. We won't duplicate `multiproce
 and their typical use cases.
 
 ### Pool
+The `multiprocessing` documentation introduces the API with this basic example using `Pool.map()`.
+
+    from multiprocessing import Pool
+
+    def f(x):
+        return x*x
+
+    if __name__ == '__main__':
+        with Pool(5) as p:
+            print(p.map(f, [1, 2, 3]))
+
+This code starts up an additional 5 processes and executes the function `f()` across each item in the list `[1,2,3]`. When your application has a pattern like this
+`Pool.map()` is a great tool for getting true parallel performance as each process is its own interpreter and GIL. This is especially important when the list of items
+is very large. The Dragon version of this code looks like the following:
+
+    import dragon
+    from multiprocessing import Pool
+
+    def f(x):
+        return x*x
+
+    if __name__ == '__main__':
+        mp.set_start_method("dragon")
+        with Pool(5) as p:
+            print(p.map(f, [1, 2, 3]))
+
+We needed to add a single `import dragon` and tell `multiprocessing` to use the `dragon` start method. That's it. If this code then called libraries underneath that
+also use `multiprocessing`, those two steps enables Dragon for the libraries as well. But what do I get from this? The true power of Dragon comes when you have a very
+large workset and can scale across an entire cluster. As of the Dragon v0.9 release, we regularily test `mp.Pool()` with over 50,000 workers on hundreds of nodes on a
+Cray EX supercomputer.
+
+    import dragon
+    from multiprocessing import Pool
+
+    def f(x):
+        return x*x
+
+    if __name__ == '__main__':
+        mp.set_start_method("dragon")
+        with Pool(50000) as p:
+            print(p.map(f, range(50000))
+
+You can also manage multiple `mp.Pool()` instances at once and have them come and go at different times. This is great for use-cases where the nature of computation
+changes over time. For example, imagine we had to process two types of files, `type A` and `type B`. Let's say `type A` takes twice as much time to process a single
+file as `type B`. One approach to balance the processing could look like this:
+
+    import dragon
+    from multiprocessing import Pool
+
+    def f(x):
+        return x*x
+
+    if __name__ == '__main__':
+        mp.set_start_method("dragon")
+
+        typeAfiles = #some long list
+        typeBfiles = #some other long list
+
+        poola = Pool(2000)
+        poolb = Pool(1000)
+
+        resultsa = poola.map_async(f, typeAfiles
+        resultsb = poolb.map_async(f, typeBfiles)
+        for result in resultsa.get()
+            # do something
+        for result in resultsb.get()
+            # do something
+
+        poola.close()
+        poolb.close
+        poola.join()
+        poolb.join()
+
+Since we can manage the life-cycle of `mp.Pool()` explicitly, we can have them close and bring up new ones as our computational load changes. For Dragon users,
+they can start to view their set of nodes as a single collection of resources and program different elements of their application to use different amounts of
+resources over time. It's kind of cloud-like.
 
 ## Data
 

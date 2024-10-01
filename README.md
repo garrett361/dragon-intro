@@ -149,7 +149,7 @@ all the other communication and collective primitives in `multiprocessing`. Drag
 called [`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels).
 
 ## Data
-The Python [`dict`]([`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) is one of the most fundamental and useful abstractions in the language, in our opinon. What if we had a `dict` that scaled to hundreds or thousands of nodes
+The Python [`dict`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) is one of the most fundamental and useful abstractions in the language, in our opinon. What if we had a `dict` that scaled to hundreds or thousands of nodes
 and could be accessed by thousands of processes at the same time? Dragon has this feature. With the Dragon distributed `dict`, [DDict](https://dragonhpc.github.io/dragon/doc/_build/html/ref/data/ddict.html),
 you can easily manage data exchange at-scale between process with great performance. Like everything communication related in Dragon, it uses our
 [`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) layer for high-performance communication. It behaves with the same semantics as the

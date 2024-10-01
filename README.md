@@ -125,4 +125,12 @@ Another
 
 ## Data
 
-![DDict](ddict.png)
+![DDict](ddict.png
+
+## Telemetry
+
+![Telemetry](https://zenodo.org/records/13327798)
+
+## Workflow
+
+![Proxy](https://zenodo.org/records/10115199)

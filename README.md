@@ -2,6 +2,8 @@
 Wondering where to start with Dragon? This page is for you. We'll walk through the key patterns and abstractions
 and have you quickly programming at scale.
 
+![Pitch](dragon_pitch.png)
+
 ## Python multiprocessing
 Dragon was initially designed to allow developers to program to the standard [Python multiprocessing API](https://docs.python.org/3/library/multiprocessing.html)
 and scale their application to an entire supercomputer. The team took what they learned developing high-performamce, scalable software for Cray, Inc. and
@@ -109,6 +111,17 @@ data as they land in a filesystem. Imagine that each file has many components th
         files = #some long list
         with Pool(128) as p:
             all_results = p.map(f, files)
+
+There is much more you can do with `mp.Pool` yet, especially when an entire supercomputer's resources are at your command. The key thing is that with Dragon's
+implementation you can scale out, get great performance in the internal communication that happens in `mp.Pool()`, and it integrates with the rest of the Python
+ecosystem as it should.
+
+### Process
+
+### Queue
+Another 
+
+
 
 ## Data
 

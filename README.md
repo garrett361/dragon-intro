@@ -9,3 +9,7 @@ apply it to the standard API for parallel Python. We won't duplicate `multiproce
 and their typical use cases.
 
 ### Pool
+
+## Data
+
+![DDict](ddict.png)

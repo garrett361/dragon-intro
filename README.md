@@ -153,7 +153,37 @@ The Python [`dict`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/
 and could be accessed by thousands of processes at the same time? Dragon has this feature. With the Dragon distributed `dict`, [DDict](https://dragonhpc.github.io/dragon/doc/_build/html/ref/data/ddict.html),
 you can easily manage data exchange at-scale between process with great performance. Like everything communication related in Dragon, it uses our
 [`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) layer for high-performance communication. It behaves with the same semantics as the
-normal 
+normal `dict` and how they are accessed frm multiple threads at the same time. The only difference with the `DDict` is it works across multiple processes.
+
+Using the `DDict` looks like the following:
+
+    import dragon
+    from multiprocessing import Pool
+    from dragon.data.ddict import DDict
+
+    dist_dict = None  # this is scope only in the current process, not across processes
+                      # this lets us access the variable across functions below using "global"
+                      # there are other ways to do this, but this one is pretty short
+
+    def setup(_ddict):
+        global dist_dict
+        dist_dict = _ddict
+
+    def assign(x):
+        global dist_dict
+        key = # some object, like a string or int
+        dist_dict[key] = x
+
+    if __name__ == '__main__':
+        mp.set_start_method("dragon")
+
+        dist_dict = DDict(managers_per_node=1, num_nodes=1, total_mem=1024**3)
+        
+        with Pool(5, initializer=setup, initargs=(dist_dict,)) as p:
+            print(p.map(assign, [1, 2, 3]))
+
+        for k in dist_dict.keys():
+            print(f"{k} = {dist_dict[k]}", flush=True)
 
 [benchmark](gups_ddict.py)
 

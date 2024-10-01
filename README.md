@@ -1,5 +1,5 @@
 # Introduction to Dragon
-Wondering where to start with Dragon? This page is for you. We'll walk through the key patterns and abstractions
+Wondering where to start with [Dragon](http://dragonhpc.org/)? This page is for you. We'll walk through the key patterns and abstractions
 and have you quickly programming at scale.
 
 ![Pitch](dragon_pitch.png)
@@ -66,8 +66,8 @@ file as `type B`. One approach to balance the processing could look like this:
     if __name__ == '__main__':
         mp.set_start_method("dragon")
 
-        typeAfiles = #some long list
-        typeBfiles = #some other long list
+        typeAfiles = # some long list
+        typeBfiles = # some other long list
 
         poola = Pool(2000)
         poolb = Pool(1000)
@@ -108,19 +108,45 @@ data as they land in a filesystem. Imagine that each file has many components th
     if __name__ == '__main__':
         mp.set_start_method("dragon")
 
-        files = #some long list
+        files = # some long list
         with Pool(128) as p:
             all_results = p.map(f, files)
 
 There is much more you can do with `mp.Pool` yet, especially when an entire supercomputer's resources are at your command. The key thing is that with Dragon's
-implementation you can scale out, get great performance in the internal communication that happens in `mp.Pool()`, and it integrates with the rest of the Python
+implementation you can scale out, get great performance on the internal communication that happens in `mp.Pool()`, and it integrates with the rest of the Python
 ecosystem as it should.
 
-### Process
-
 ### Queue
-Another 
+The other interface we typically highlight from `multiprocessing` is [`mp.Queue`](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue).
+We often use it any time there are multiple readers and/or writers needing to communicate. It's a FIFO-style queue, and with Dragon's implementation, processes
+can transparently access it from any node in a supercomputer the Dragon runtime is deployed to. `mp.Queue` is used internally in `mp.Pool` for both the input of
+items to process and the results that come back to the calling process. Since we test Dragon's `mp.Pool` implementation on hundreds of nodes, we know our `mp.Queue`
+scales well. We do have designs for even better scaling, but that's for a different document. Here's how to use `mp.Queue` in combination with another idiom from
+`multiprocessing` called `mp.Process`.
 
+    import dragon
+    from multiprocessing import Process, Queue
+
+    def compute_it(f):
+        # do something
+
+    def work(f, resultq):
+        resultq.put(compute_it(f))
+
+     if __name__ == '__main__':
+        mp.set_start_method("dragon")
+
+        q = Queue()
+        somedata = # some data
+        p = Process(target=work, args=(somedata, q))
+        p.start()
+
+        result = q.get()
+        p.join()
+
+`mp.Queue` is a "pickleable" object, which means you can pass it as an argument to an entirely other Python process, as done in this example. The same is true for
+all the other communication and collective primitives in `multiprocessing`. Dragon's implementation relies on our high-performance (Shared memory+RDMA-capable) communication layer,
+called [`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels).
 
 
 ## Data

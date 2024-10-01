@@ -80,7 +80,7 @@ file as `type B`. One approach to balance the processing could look like this:
             # do something
 
         poola.close()
-        poolb.close
+        poolb.close()
         poola.join()
         poolb.join()
 

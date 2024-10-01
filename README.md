@@ -206,6 +206,12 @@ the `DDict` is not persistent between executions of Dragon. We are working on th
 
 [ProcessGroup](https://dragonhpc.github.io/dragon/doc/_build/html/ref/native/Python/dragon.native.process_group.html#module-dragon.native.process_group)
 
+### System
+
+[Machine](https://dragonhpc.github.io/dragon/doc/_build/html/ref/native/Python/dragon.native.machine.html)
+
+[Policy](https://dragonhpc.github.io/dragon/doc/_build/html/ref/inf/dragon.infrastructure.policy.html#module-dragon.infrastructure.policy)
+
 ## Telemetry
 
 [Telemetry](https://zenodo.org/records/13327798)

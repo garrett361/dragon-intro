@@ -153,7 +153,7 @@ The Python [`dict`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/
 and could be accessed by thousands of processes at the same time? Dragon has this feature. With the Dragon distributed `dict`, [DDict](https://dragonhpc.github.io/dragon/doc/_build/html/ref/data/ddict.html),
 you can easily manage data exchange at-scale between process with great performance. Like everything communication related in Dragon, it uses our
 [`Channels`](https://dragonhpc.github.io/dragon/doc/_build/html/ref/core/index.html#channels) layer for high-performance communication. It behaves with the same semantics as the
-normal `dict` and how they are accessed frm multiple threads at the same time. The only difference with the `DDict` is it works across multiple processes.
+normal `dict` and how they are accessed from multiple threads at the same time. The only difference with the `DDict` is it works across multiple processes.
 
 Using the `DDict` looks like the following:
 
